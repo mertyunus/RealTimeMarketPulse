@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPulse | Real-Time Crypto & WebSocket Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20260725">
+    <script src="lib/signalr.min.js"></script>
+    <script src="lib/chart.js"></script>
+    <script src="lib/lucide.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation / Status Header -->
+        <header class="glass-header">
+            <div class="logo-area">
+                <div class="pulse-ring"></div>
+                <h1>Market<span>Pulse</span></h1>
+                <span class="badge badge-beta">.NET 9 + SignalR + Quartz + Redis</span>
+            </div>
+            
+            <div class="system-status-group">
+                <div class="status-pill" id="pill-signalr">
+                    <span class="status-dot dot-cyan"></span>
+                    <span class="status-label">SignalR WebSocket:</span>
+                    <span class="status-val" id="val-signalr">Bağlanıyor...</span>
+                </div>
+                <div class="status-pill" id="pill-redis">
+                    <span class="status-dot dot-amber"></span>
+                    <span class="status-label">Önbellek (Cache):</span>
+                    <span class="status-val" id="val-redis">Bekleniyor...</span>
+                </div>
+                <div class="status-pill" id="pill-quartz">
+                    <span class="status-dot dot-green"></span>
+                    <span class="status-label">Quartz Zamanlayıcı:</span>
+                    <span class="status-val" id="val-quartz">Aktif (3s)</span>
+                </div>
+                <div class="status-pill pill-counter">
+                    <span class="status-label">Veri Çekme:</span>
+                    <span class="status-val text-mono" id="val-fetch-count">#0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Action Bar & Controls -->
+        <section class="controls-bar glass-panel">
+            <div class="controls-left">
+                <div class="provider-info">
+                    <i data-lucide="radio" class="icon-pulse"></i>
+                    <span>Veri Kaynağı: <strong id="provider-name">Yükleniyor...</strong></span>
+                </div>
+            </div>
+            <div class="controls-right">
+                <button class="btn btn-primary" id="btn-force-fetch">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>Anlık Tetikle (Force Fetch)</span>
+                </button>
+                <button class="btn btn-warning" id="btn-test-alert">
+                    <i data-lucide="zap"></i>
+                    <span>Test Alarmı (Simülasyon)</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Dashboard Grid -->
+        <main class="dashboard-grid">
+            <!-- Left Area: Live Ticker Grid -->
+            <div class="tickers-section">
+                <div class="section-title">
+                    <i data-lucide="trending-up"></i>
+                    <h2>Canlı Piyasa Fiyatları (24s)</h2>
+                </div>
+                <div class="ticker-grid" id="ticker-grid">
+                    <!-- Ticker cards dynamically injected via JS -->
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>WebSocket üzerinden anlık veriler bekleniyor...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Area: Live Chart & Alert Feed -->
+            <aside class="analytics-aside">
+                <!-- Live Chart Card -->
+                <div class="chart-card glass-panel">
+                    <div class="chart-header">
+                        <div>
+                            <span class="chart-subtitle">Anlık WebSocket Akış Grafiği</span>
+                            <h3 id="chart-title">BTC / USD Canlı Takip</h3>
+                        </div>
+                        <div class="symbol-selector-wrap">
+                            <select id="chart-symbol-select" class="glass-select">
+                                <option value="BTC">BTC</option>
+                                <option value="ETH">ETH</option>
+                                <option value="SOL">SOL</option>
+                                <option value="BNB">BNB</option>
+                                <option value="XRP">XRP</option>
+                                <option value="DOGE">DOGE</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-canvas-wrap">
+                        <canvas id="liveChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Real-Time Event Feed -->
+                <div class="feed-card glass-panel">
+                    <div class="feed-header">
+                        <i data-lucide="bell-ring"></i>
+                        <h3>Anlık Alarm & Bildirim Akışı</h3>
+                        <span class="badge badge-live">Canlı</span>
+                    </div>
+                    <div class="feed-list" id="feed-list">
+                        <!-- Feed items dynamically injected -->
+                        <div class="feed-item item-info">
+                            <div class="feed-time">Sistem</div>
+                            <div class="feed-content">MarketPulse dinleme servisi başlatıldı. Bildirimler buraya akacak.</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="glass-footer">
+            <p>Geliştirildi: <strong>.NET 9</strong> &bull; <strong>SignalR WebSocket</strong> &bull; <strong>Quartz.NET</strong> &bull; <strong>Redis Caching & Pub/Sub</strong></p>
+        </footer>
+    </div>
+    <script src="js/app.js?v=20260725v2"></script>
+    <script>if (typeof lucide !== 'undefined' && lucide.createIcons) { lucide.createIcons(); }</script>
+</body>
+</html>
